@@ -1,17 +1,19 @@
 let size = 20;
-let canWidth = size * 14;
+let canWidth = size * 20;
 let canHeight = size * 30;
 let coordinates = [];
 let x;
 let y;
 let currentBlock = "";
+let nextBlock = "";
 let blocks = ["L", "J", "I", "O", "S", "T", "Z"];
 let row = 28;
 let col = 12;
 const EMPTY = 0;
 const BLOCK = 1;
 let tetromino;
-let msSpeed = 500;
+let nextTetromino;
+let msSpeed = 400;
 
 
 function setup()
@@ -19,7 +21,7 @@ function setup()
     createCanvas(canWidth, canHeight);
     for (let i = 0; i < row * col; i++)
     {
-            coordinates[i] = " ";
+        coordinates[i] = " ";
     }
     for (let i = 0; i < col; i++)
     {
@@ -44,6 +46,7 @@ function setup()
         x -= size;
     }
     d = millis();
+    nextBlock = random(blocks);
     newBlock();
 }
 
@@ -77,6 +80,19 @@ function draw()
                         }
                     }
                 }
+            }
+        }
+    }
+
+
+    for (let i = 0; i < 4; i++)
+    {
+        for (let j = 0; j < 4; j++)
+        {
+            if (nextTetromino.arr[nextTetromino.idx][i][j] == BLOCK)
+            {
+                nextTetromino.fillTetromino();
+                rect(300 + j * size, 60 + i * size, size, size);
             }
         }
     }
@@ -135,34 +151,48 @@ function keyPressed()
             tetromino.idx = 0;
         }
     }
-    else if (keyCode === DOWN_ARROW)
+    else if (keyCode === 32) //space
     {
-        y+=size;
+        let canMoveDown = true;
+        while (canMoveDown)
+        {
+            for (let i = 0; i < 4; i++)
+            {
+                for (let j = 0; j < 4; j++)
+                {
+                    if (tetromino.arr[tetromino.idx][i][j] == BLOCK)
+                    {
+                        let idx = (y + i * size - size) / size * col + (x + j * size - size) / size;
+                        if (coordinates[idx + col] != " ")
+                        {
+                            canMoveDown = false;
+                        }
+                    }
+                }
+            }
+            if (canMoveDown) { y += size; }
+        }
     }
 }
 
 function update()
 {
-    if (currentBlock == "I") { fill(72, 219, 251); }
-    else if (currentBlock == "J") { fill(6, 82, 221); }
-    else if (currentBlock == "L") { fill(238, 90, 36); }
-    else if (currentBlock == "O") { fill(255, 242, 0); }
-    else if (currentBlock == "T") { fill(142, 68, 173); }
-    else if (currentBlock == "S") { fill(46, 213, 115); }
-    else if (currentBlock == "Z") { fill(255, 71, 87); }
+    tetromino.fillTetromino();
     if (Math.abs(millis() - d) >= msSpeed)
     {
         y += size;
         d = millis();
-        deleteLine();
+        // deleteLine();
     }
+    deleteLine();
 }
 
 function newBlock()
 {
     x = size * 6;
     y = 2 * size;
-    currentBlock = random(blocks);
+    currentBlock = nextBlock;
+    nextBlock = random(blocks);
     if (currentBlock == "I")
     {
         tetromino = new TetrominoI();
@@ -179,6 +209,16 @@ function newBlock()
     }
     else if (currentBlock == "S") { tetromino = new TetrominoS(); }
     else if (currentBlock == "Z") { tetromino = new TetrominoZ(); }
+
+    
+    
+    if (nextBlock == "I")  { nextTetromino = new TetrominoI();  }
+    else if (nextBlock == "J") { nextTetromino = new TetrominoJ(); }
+    else if (nextBlock == "L") { nextTetromino = new TetrominoL(); }
+    else if (nextBlock == "O") { nextTetromino = new TetrominoO(); }
+    else if (nextBlock == "T") { nextTetromino = new TetrominoT(); }
+    else if (nextBlock == "S") { nextTetromino = new TetrominoS(); }
+    else if (nextBlock == "Z") { nextTetromino = new TetrominoZ(); }
 }
 
 function table()
@@ -241,7 +281,6 @@ function deleteLine()
         let c = 0;
         for (let j = 1; j <= col - 2; j++)
         {
-            text()
             if (coordinates[i * col + j] != " " && coordinates[i * col + j] != "X")
             {
                 c++;

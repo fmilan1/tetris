@@ -34,4 +34,8 @@
         ]
         ];
     }
+    fillTetromino()
+    {
+        fill(6, 82, 221);
+    }
 }
