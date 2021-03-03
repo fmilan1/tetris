@@ -22,6 +22,7 @@ let myJson;
 
 function setup()
 {
+    console.log("kecske ez a szerver :D");
     myJson = loadJSON("score.json");  
     
     createCanvas(canWidth, canHeight);
