@@ -52,9 +52,15 @@ function setup()
 
 function draw()
 {
-    background(220);
-    let newNeeded = false;
+    background(200);
     update();
+    detectNewNeeded();
+    table();
+}
+
+function detectNewNeeded()
+{
+    let newNeeded = false;
     for (let i = 0; i < 4; i++)
     {
         for (let j = 0; j < 4; j++)
@@ -70,37 +76,18 @@ function draw()
                     {
                         for (let l = 0; l < 4; l++)
                         {
-                            if (tetromino.arr[tetromino.idx][k][l] == BLOCK) 
+                            if (tetromino.arr[tetromino.idx][k][l] == BLOCK)
                             {
                                 idx = (y + k * size - size) / size * col + (x + l * size - size) / size;
                                 coordinates[idx] = currentBlock;
-                                
                             }
-                            
                         }
                     }
                 }
             }
         }
     }
-
-
-    for (let i = 0; i < 4; i++)
-    {
-        for (let j = 0; j < 4; j++)
-        {
-            if (nextTetromino.arr[nextTetromino.idx][i][j] == BLOCK)
-            {
-                nextTetromino.fillTetromino();
-                rect(300 + j * size, 60 + i * size, size, size);
-            }
-        }
-    }
-    if (newNeeded)
-    {
-        newBlock();
-    }
-    table();
+    if (newNeeded) { newBlock(); }
 }
 
 function keyPressed()
@@ -108,9 +95,9 @@ function keyPressed()
     if (keyCode === LEFT_ARROW)
     {
         let canMoveLeft = true;
-        for (let i = 0; i < 4; i++)
+        for (let i = 0; i < 4 && canMoveLeft; i++)
         {
-            for (let j = 0; j < 4; j++)
+            for (let j = 0; j < 4 && canMoveLeft; j++)
             {
                 if (tetromino.arr[tetromino.idx][i][j] == BLOCK)
                 {
@@ -127,9 +114,9 @@ function keyPressed()
     else if (keyCode === RIGHT_ARROW)
     {
         let canMoveRight = true;
-        for (let i = 0; i < 4; i++)
+        for (let i = 0; i < 4 && canMoveRight; i++)
         {
-            for (let j = 0; j < 4; j++)
+            for (let j = 0; j < 4 && canMoveRight; j++)
             {
                 if (tetromino.arr[tetromino.idx][i][j] == BLOCK)
                 {
@@ -156,9 +143,9 @@ function keyPressed()
         let canMoveDown = true;
         while (canMoveDown)
         {
-            for (let i = 0; i < 4; i++)
+            for (let i = 0; i < 4 && canMoveDown; i++)
             {
-                for (let j = 0; j < 4; j++)
+                for (let j = 0; j < 4 && canMoveDown; j++)
                 {
                     if (tetromino.arr[tetromino.idx][i][j] == BLOCK)
                     {
@@ -172,11 +159,23 @@ function keyPressed()
             }
             if (canMoveDown) { y += size; }
         }
+        detectNewNeeded();
     }
 }
 
 function update()
 {
+    nextTetromino.fillTetromino();
+    for (let i = 0; i < 4; i++)
+    {
+        for (let j = 0; j < 4; j++)
+        {
+            if (nextTetromino.arr[nextTetromino.idx][i][j] == BLOCK)
+            {
+                rect(300 + j * size, 60 + i * size, size, size);
+            }
+        }
+    }
     tetromino.fillTetromino();
     if (Math.abs(millis() - d) >= msSpeed)
     {
