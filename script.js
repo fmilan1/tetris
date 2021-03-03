@@ -17,14 +17,10 @@ let nextTetromino;
 let msSpeed = 400;
 let score = 0;
 let deletedLines = 0;
-let myJson;
 
 
 function setup()
 {
-    console.log("kecske ez a szerver :D");
-    myJson = loadJSON("score.json");  
-    
     createCanvas(canWidth, canHeight);
     for (let i = 0; i < row * col; i++)
     {
