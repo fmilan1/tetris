@@ -18,6 +18,9 @@ let msSpeed = 400;
 
 function setup()
 {
+    
+    let myJson = loadJSON("score.json");
+    
     createCanvas(canWidth, canHeight);
     for (let i = 0; i < row * col; i++)
     {
