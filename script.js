@@ -20,14 +20,9 @@ let deletedLines = 0;
 let myJson;
 
 
-function gotData(data)
-{
-    console.log(data);
-}
-
 function setup()
 {
-    loadJSON("score.json", gotData);  
+    myJson = loadJSON("score.json");  
     
     createCanvas(canWidth, canHeight);
     for (let i = 0; i < row * col; i++)
