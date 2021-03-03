@@ -1,3 +1,4 @@
+
 let size = 20;
 let canWidth = size * 20;
 let canHeight = size * 30;
@@ -14,12 +15,19 @@ const BLOCK = 1;
 let tetromino;
 let nextTetromino;
 let msSpeed = 400;
+let score = 0;
+let deletedLines = 0;
+let myJson;
 
+
+function gotData(data)
+{
+    console.log(data);
+}
 
 function setup()
 {
-    
-    let myJson = loadJSON("score.json");
+    loadJSON("score.json", gotData);  
     
     createCanvas(canWidth, canHeight);
     for (let i = 0; i < row * col; i++)
@@ -55,6 +63,7 @@ function setup()
 
 function draw()
 {
+    strokeWeight(3);
     background(200);
     update();
     detectNewNeeded();
@@ -168,6 +177,9 @@ function keyPressed()
 
 function update()
 {
+    fill(0);
+    textSize(24);
+    text(score, 300, 300);
     nextTetromino.fillTetromino();
     for (let i = 0; i < 4; i++)
     {
@@ -182,9 +194,13 @@ function update()
     tetromino.fillTetromino();
     if (Math.abs(millis() - d) >= msSpeed)
     {
+        if (deletedLines == 1) score += 40;
+        else if (deletedLines == 2) score += 100;
+        else if (deletedLines == 3) score += 300;
+        else if (deletedLines == 4) score += 1200;
+        deletedLines = 0;
         y += size;
         d = millis();
-        // deleteLine();
     }
     deleteLine();
 }
@@ -271,6 +287,8 @@ function table()
             fill(72, 219, 251);
             rect(x2, y2, size, size);
         }
+        // fill(0);
+        // text(coordinates[i], x2, y2 + size - size / 9)
     }
     
     
@@ -288,24 +306,19 @@ function deleteLine()
                 c++;
             }
         }
-        if (c == col - 2)
+        if (c == 10)
         {
             for (let k = i - 1; k >= 1; k--)
             {
                 for (let l = 1; l <= col - 2; l++)
                 {
-                    textSize(24);
-                    fill(220)
-                    rect(0, 0, 100, 15);
-                    fill(0);
-                    text(k + " " + c, 10, 15);
                     if (coordinates[(k + 1) * col + l] != "X")
                     {
                         coordinates[(k + 1) * col + l] = coordinates[k * col + l];
-
                     }
                 }
             }
+            deletedLines++;
         }
     }
 }
