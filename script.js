@@ -1,7 +1,7 @@
 
-let size = 20;
-let canWidth = size * 20;
-let canHeight = size * 30;
+let size;
+let canWidth;
+let canHeight;
 let coordinates = [];
 let x;
 let y;
@@ -18,9 +18,11 @@ let msSpeed = 400;
 let score = 0;
 let deletedLines = 0;
 
-
 function setup()
 {
+    size = 28;
+    canWidth = size * 20;
+    canHeight = size * 30;
     createCanvas(canWidth, canHeight);
     for (let i = 0; i < row * col; i++)
     {
@@ -56,7 +58,7 @@ function setup()
 function draw()
 {
     strokeWeight(3);
-    background(200);
+    background(0);
     update();
     detectNewNeeded();
     table();
@@ -171,7 +173,7 @@ function update()
 {
     fill(0);
     textSize(24);
-    text(score, 300, 300);
+    document.getElementsByClassName("score")[0].innerHTML = "score: " + score;
     nextTetromino.fillTetromino();
     for (let i = 0; i < 4; i++)
     {
@@ -179,7 +181,7 @@ function update()
         {
             if (nextTetromino.arr[nextTetromino.idx][i][j] == BLOCK)
             {
-                rect(300 + j * size, 60 + i * size, size, size);
+                rect(size * 15 + j * size, size * 2 + i * size, size, size);
             }
         }
     }
